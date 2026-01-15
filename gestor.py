@@ -7,7 +7,7 @@ def agregar_gasto():
     fecha = input('ingresa fecha (dd/mm/aa):')
     gasto = [descripcion,categoria,monto,fecha]
 
-    #abro el archivo para trabajar con sus datos
+    #abro el archivo csv y hago una lista para trabajar con ella
     with open('datos\\gastos.csv',newline='',encoding='utf-8') as f:
         lista = list(csv.reader(f, delimiter=','))
         #verifico cual es el ultimo id y lo almaceno en una variable
@@ -75,7 +75,7 @@ def buscar_gasto():
             print('intenta con un numero valido')
 
 def modificar_gasto():
-    #abro el archivo para trabajar sus datos
+    #abro el archivo csv y hago una lista para trabajar con ella
     with open('datos\\gastos.csv',newline='',encoding='utf-8') as f:
         lista = list(csv.reader(f, delimiter=','))
 
@@ -120,3 +120,33 @@ def modificar_gasto():
                     nuevo.writerows(lista)
                 print(f'el gasto {gasto_a_modificar} ha sido modificado exitosamente')
                 break
+
+def eliminar_gasto():
+    #pedir id del gasto a eliminar
+    gasto_a_eliminar = int(input('ingrese el id del gasto a eliminar: '))
+
+    #abro el archivo csv y hago una lista para trabajar con ella
+    with open('datos\\gastos.csv',newline='',encoding='utf-8') as f:
+        lista = list(csv.reader(f, delimiter=','))
+
+    #elimino el el gasto con el id ingresado
+    lista.pop(int(lista[gasto_a_eliminar][0]))
+
+    #hago una lista para ingresar los datos con la id corregida
+    nueva_lista = []
+
+    #ciclo para recorrer gastos.csv (excluyendo los nombres de las columnas)
+    for i in range(1,len(lista)):
+        nuevos_datos = [] #lista temporal para almacenar los datos
+
+        #ciclo para recorrer los datos de cada fila a exepcion del id y agregarlos a la lista "nuevos_datos"
+        for j in range(1,len(lista[0])):
+            nuevos_datos.append(lista[i][j])
+
+        nuevos_datos.insert(0, i) #agrego el id correspondiente en la pocicion 0 de la lista de datos
+        nueva_lista.append(nuevos_datos) #agrego la lista con todos los datos a la lista  "nueva_lista"
+
+    #abro el archivo gastos.csv y cambio su contenido por el de la lista "nueva_lista"
+    with open('datos\\gastos.csv','w',newline='',encoding='utf-8') as f:
+        lista = csv.writer(f, delimiter=',')
+        lista.writerows(nueva_lista)
